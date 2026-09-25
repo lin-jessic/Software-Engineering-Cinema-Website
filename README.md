@@ -111,8 +111,8 @@ Software-Engineering-Cinema-Website/
 
 ## Documents
 
-- [`User_Manual.pdf`](./reports/User_Manual.pdf) — 系統操作與使用說明
-- [`Test_Report.pdf`](./reports/Test_Report.pdf) — 系統測試內容與結果
+- [`User_Manual.pdf`](./reports/B1229062_使用手冊 .pdf) — 系統操作與使用說明
+- [`Test_Report.pdf`](./reports/B1229062_測試報告 .pdf) — 系統測試內容與結果
 
 ---
 
