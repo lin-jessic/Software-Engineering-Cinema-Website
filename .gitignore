@@ -1,0 +1,9 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# SQLite DB (本機 DB 不同步)
+*.db

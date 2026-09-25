@@ -1,0 +1,15 @@
+@media print {
+  body {
+    font-size: 12px;
+    color: black;
+  }
+
+  button, select {
+    display: none;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    font-family: "Noto Sans TC", monospace;
+  }
+}

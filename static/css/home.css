@@ -1,0 +1,383 @@
+/* ===== 全站色票（可放在 style.css 最上面） ===== */
+:root {
+  --blue-main:  #2758a4;   /* 深藍：快速訂票主框 */
+  --blue-light: #3f83e8;   /* 亮藍：按鈕、日期條 */
+  --blue-bg:    #f5f7fb;   /* 淺藍灰：區塊背景 */
+  --tab-grey:   #e0e0e0;   /* 左側灰色選單 */
+  --text-dark:  #222;
+  --text-muted: #666;
+  --white:      #ffffff;
+}
+
+/* Banner */
+.hero-banner img {
+  display: block;
+  width: 100%;
+}
+
+/* 中段整體 */
+.main-section {
+  background: var(--blue-bg);
+  padding: 40px 0;
+}
+
+.main-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 左側區域 */
+.left-area {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* 側邊灰色選單（像威秀左邊那排） */
+.side-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0 15px 0 0;
+}
+
+.side-menu a {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.side-menu li {
+  width: 120px;
+  padding: 12px 10px;
+  background: var(--tab-grey);
+  color: var(--text-muted);
+  font-size: 14px;
+  border-bottom: 1px solid #cfcfcf;
+  cursor: pointer;
+}
+
+.side-menu li.active {
+  background: var(--white);
+  font-weight: 600;
+  color: var(--text-dark);
+  border-left: 4px solid var(--blue-main);
+}
+
+/* 快速訂票主框 */
+.booking-panel {
+  width: 420px;
+  background: var(--blue-main);
+  border-radius: 18px;
+  padding: 20px 28px 24px;
+  color: var(--white);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-size: 18px;
+}
+
+.booking-header .title-right {
+  opacity: 0.85;
+}
+
+/* 內部輸入欄位 */
+.booking-fields .field {
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+}
+
+.field .icon {
+  width: 26px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--blue-main);
+}
+
+.field select,
+.field input {
+  border: none;
+  outline: none;
+
+  width: 100%;              /* ⭐ 關鍵 */
+  box-sizing: border-box;   /* ⭐ 關鍵 */
+
+  padding: 10px 6px;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #fff;
+}
+.field select {
+  padding-right: 32px;      /* ⭐ 專門留給 v 的空間 */
+
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%232758a4' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+}
+
+
+/* 底部兩顆按鈕 */
+.booking-buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
+}
+
+.btn-book {
+  flex: 1;
+  background: var(--blue-light);   /* 亮藍 */
+  color: var(--white);
+  border-radius: 4px;
+  border: none;
+  padding: 12px 0;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-seat {
+  flex: 1;
+  background: var(--white);
+  color: var(--blue-light);
+  border: 1px solid var(--blue-light);
+  border-radius: 4px;
+  padding: 12px 0;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* 右側最新公告 */
+.right-area {
+  flex: 1;
+  margin-left: 60px;
+}
+
+.news-header {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.news-title {
+  font-size: 22px;
+  color: var(--blue-main);
+  margin-right: 6px;
+}
+
+.news-more {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.news-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.news-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.news-date {
+  display: inline-block;
+  min-width: 100px;
+  padding: 6px 8px;
+  margin-right: 10px;
+  background: var(--blue-light);   /* 日期條亮藍 */
+  color: var(--white);
+  font-size: 13px;
+  text-align: center;
+  border-radius: 2px;
+}
+
+.news-text {
+  color: var(--text-dark);
+}
+
+/* 下方橫幅廣告 */
+.ad-strip {
+  background: #f2f2f2;
+  padding: 18px 0;
+}
+
+.ad-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.ad-track img {
+  flex: 1;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.news-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.news-link:hover {
+  background: rgba(39, 88, 164, 0.08); /* 威秀淡藍 hover */
+}
+
+/* ===== 座位彈窗 ===== */
+.seat-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.seat-modal.hidden {
+  display: none;
+}
+
+.seat-modal-content {
+  background: #fff;
+  width: 760px;
+  max-width: 95%;
+  padding: 24px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.seat-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: none;
+  background: #f5f5f5;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.screen-title {
+  text-align: center;
+  background: #eee;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+/* ===== 座位 ===== */
+/* ===== 座位（官方排版模型） ===== */
+.seat-map {
+  display: grid;
+  grid-template-columns: repeat(10, 36px); /* 10 欄 */
+  gap: 10px;
+  justify-content: center;
+}
+
+
+.seat-row {
+  display: flex;              /* 每排橫向 */
+  gap: 6px;
+}
+
+.seat {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+
+.seat {
+  width: 34px;
+  height: 34px;
+  font-size: 13px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.seat.sold {
+  background: #e53935;
+  color: #fff;
+}
+
+.seat.available {
+  background: #4fc3f7;
+  color: #fff;
+}
+
+.seat-legend {
+  margin-top: 16px;
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+}
+
+.legend {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.legend.sold { background: #e53935; }
+.legend.available { background: #4fc3f7; }
+
+/* ===== 座位資訊（同步快速訂票） ===== */
+.seat-info {
+  margin-bottom: 14px;
+}
+
+.seat-info h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.seat-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.screen-title {
+  margin: 12px 0 16px;
+  text-align: center;
+  background: #eee;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+}

@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}會員列表 - 後台{% endblock %}
+
+{% block extra_css %}
+<style>
+  .members-container {
+    width: 90%;
+    margin: 30px auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+  }
+  th {
+    background: #333;
+    color: #fff;
+  }
+  tr:nth-child(even) {
+    background: #f7f7f7;
+  }
+  .action-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+  }
+  .edit-btn {
+    background: #ffa500;
+    color: white;
+  }
+  .delete-btn {
+    background: #e60000;
+    color: white;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="members-container">
+  <h1>會員列表</h1>
+
+  <!-- 顯示 flash 訊息 -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash-msg">
+        {% for msg in messages %}
+          <p>{{ msg }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% if members %}
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>姓名</th>
+        <th>身分證</th>
+        <th>Email</th>
+        <th>電話</th>
+        <th>生日</th>
+        <th>銀行帳號</th>
+        <th>註冊時間</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for m in members %}
+      <tr>
+        <td>{{ m.id }}</td>
+        <td>{{ m.username }}</td>
+        <td>{{ m.id_number }}</td>
+        <td>{{ m.email }}</td>
+        <td>{{ m.phone }}</td>
+        <td>{{ m.birthday }}</td>
+        <td>{{ m.bank_account }}</td>
+        <td>{{ m.created_at }}</td>
+        <td>
+          <!-- 編輯按鈕 -->
+          <a href="{{ url_for('admin_edit_member', member_id=m.id) }}" class="action-btn edit-btn">
+            編輯
+          </a>
+
+          <!-- 刪除按鈕 -->
+          <form action="{{ url_for('admin_delete_member', member_id=m.id) }}" method="POST" style="display:inline;">
+            <button class="action-btn delete-btn"
+                    onclick="return confirm('確定要刪除此會員嗎？')">
+              刪除
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% else %}
+  <p>目前沒有任何會員資料。</p>
+  {% endif %}
+</div>
+{% endblock %}

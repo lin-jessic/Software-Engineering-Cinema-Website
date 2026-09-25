@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}確認訂票資訊{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+  .confirm-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .confirm-info-box {
+    flex: 1;
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  }
+
+  .confirm-title {
+    font-size: 40px;
+    font-weight: 800;
+    color: #4f46e5;
+    margin-bottom: 24px;
+  }
+
+  .confirm-row {
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  .confirm-label {
+    display: inline-block;
+    min-width: 110px;
+    color: #6b7280;
+  }
+
+  .confirm-buttons {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #334155;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    background: #f1f5f9;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #4f46e5;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .poster-box {
+    width: 220px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .poster-box img {
+    width: 100%;
+    max-width: 220px;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section">
+  <div class="confirm-wrapper">
+    <div class="confirm-info-box">
+      <h1 class="confirm-title">確認訂票資訊</h1>
+
+      <div class="confirm-row">
+        <span class="confirm-label">電影名稱：</span>
+        {{ booking.movie_title_display or booking.movie_title or booking.movie }}
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">影城：</span>{{ booking.theater }}
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">場次：</span>{{ booking.date }} {{ booking.time }}
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">座位：</span>
+        {% if booking.seats %}
+          {{ booking.seats|join(',') if booking.seats is iterable else booking.seats }}
+        {% else %}
+          未選擇
+        {% endif %}
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">票種：</span>
+        全票 {{ booking.adult or 0 }} 張，
+        學生票 {{ booking.student or 0 }} 張，
+        共 {{ (booking.adult or 0) + (booking.student or 0) }} 張
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">餐飲：</span>
+        {% if booking.food_detail %}
+          {{ booking.food_detail }}
+        {% else %}
+          無
+        {% endif %}
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">付款方式：</span>
+        {{ booking.payment_method or 'credit' }}
+      </div>
+
+      <div class="confirm-row">
+        <span class="confirm-label">總金額：</span>${{ booking.total_price or 0 }}
+      </div>
+
+      <!-- 底下是按鈕：回上一步＋送出訂票 -->
+      <form method="post" class="confirm-buttons">
+        <!-- 回上一步（GET 回前一頁） -->
+        <a href="{{ url_for('booking_payment') }}" class="btn-secondary">
+          回上一步
+        </a>
+
+        <!-- 送出（POST 到同一路由 → 建立訂單） -->
+        <button type="submit" class="btn-primary">
+          確認送出訂票
+        </button>
+      </form>
+    </div>
+
+    {% if booking.poster_url %}
+    <div class="poster-box">
+      <img src="{{ booking.poster_url }}" alt="{{ booking.movie_title_display or booking.movie_title }}">
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

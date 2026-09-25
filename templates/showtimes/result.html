@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}場次查詢{% endblock %}
+
+{% block extra_css %}
+<style>
+.showtime-wrapper {
+  max-width: 900px;
+  margin: 40px auto;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #000;
+}
+
+.showtime-header {
+  margin-bottom: 20px;
+}
+
+.showtime-header select {
+  width: 360px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+.showtime-period {
+  margin: 12px 0 24px;
+  color: #333;
+}
+
+.movie-block {
+  margin-bottom: 28px;
+}
+
+.movie-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.day-block {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.times {
+  margin-left: 40px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="showtime-wrapper">
+
+  <!-- 影城選單（會自動同步 index.html 傳來的影城） -->
+  <div class="showtime-header">
+    <select id="theaterSelect">
+      <optgroup label="雙北">
+        <option>台北信義威力影城</option>
+        <option>台北京站威力影城</option>
+        <option>台北南港 LaLaport 威力影城</option>
+        <option>台北西門威力影城</option>
+      </optgroup>
+      <optgroup label="新北">
+        <option>新北板橋威力影城</option>
+        <option>新北林口 MITSUI OUTLET PARK 威力影城</option>
+        <option>中和環球威力影城</option>
+      </optgroup>
+      <optgroup label="桃竹苗">
+        <option>桃園統領威力影城</option>
+        <option>桃園桃知道威力影城</option>
+        <option>新竹大遠百威力影城</option>
+        <option>新竹巨城威力影城</option>
+      </optgroup>
+      <optgroup label="中部">
+        <option>台中大遠百威力影城</option>
+        <option>台中大魯閣新時代威力影城</option>
+      </optgroup>
+      <optgroup label="南部">
+        <option>台南大遠百威力影城</option>
+        <option>台南 FOCUS 威力影城</option>
+        <option>高雄大遠百威力影城</option>
+      </optgroup>
+      <optgroup label="東部">
+        <option>花蓮新天堂樂園 威力影城</option>
+      </optgroup>
+    </select>
+
+    <button onclick="window.print()">列印</button>
+  </div>
+
+  <!-- 查詢期間（固定即可，符合 PDF） -->
+  <div class="showtime-period">
+    場次查詢期間：12月12日 星期五 - 12月18日 星期四
+  </div>
+
+  <!-- 場次內容 -->
+  <div id="showtimeContent"></div>
+
+</div>
+
+<!-- 載入你的場次資料 -->
+<script src="{{ url_for('static', filename='js/showtimes.js') }}"></script>
+
+<script>
+// ===== 取得 DOM =====
+const select = document.getElementById("theaterSelect");
+const content = document.getElementById("showtimeContent");
+
+// ===== 從 URL 取得 index.html 傳來的影城 =====
+function getQueryParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+// ===== 渲染場次 =====
+function renderShowtimes() {
+  const theater = select.value;
+  const movies = SHOWTIMES[theater];
+
+  content.innerHTML = "";
+
+  if (!movies) {
+    content.innerHTML = "<p>此影城尚無場次資料</p>";
+    return;
+  }
+
+  movies.forEach(m => {
+    const movieDiv = document.createElement("div");
+    movieDiv.className = "movie-block";
+
+    movieDiv.innerHTML = `<div class="movie-title">${m.movie}</div>`;
+
+    Object.entries(m.days).forEach(([date, times]) => {
+      movieDiv.innerHTML += `
+        <div class="day-block">
+          ${date}
+          <div class="times">${times}</div>
+        </div>
+      `;
+    });
+
+    content.appendChild(movieDiv);
+  });
+}
+
+// ===== 初始化：自動選中 index.html 傳來的影城 =====
+const urlTheater = getQueryParam("theater");
+
+if (urlTheater) {
+  for (let option of select.options) {
+    if (option.value === urlTheater) {
+      select.value = urlTheater;
+      break;
+    }
+  }
+}
+
+// ===== 事件綁定 =====
+select.addEventListener("change", renderShowtimes);
+
+// ===== 首次顯示 =====
+renderShowtimes();
+</script>
+
+{% endblock %}

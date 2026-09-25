@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}最新公告 / MORE{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+  /* 讓公告列整列可點、hover 有感 */
+  .news-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-decoration:none;
+    color:inherit;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .news-row:hover{ background: rgba(0,0,0,0.02); }
+
+  .news-row .news-date{
+    min-width: 110px;
+    padding: 6px 10px;
+    background:#3f83e8;
+    color:#fff;
+    text-align:center;
+    border-radius:2px;
+    font-size: 14px;
+  }
+  .news-row .news-title{
+    flex:1;
+    font-size: 15px;
+    color:#222;
+  }
+  .news-row .news-arrow{
+    color:#999;
+    font-size: 20px;
+  }
+
+  /* 活動卡片整張可點保持一致 */
+  .activity-card{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="news-list-page">
+
+  <!-- 🔵 上方大 Banner -->
+  <div id="newsBannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+
+      <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='img/banner1.jpg') }}" class="d-block w-100">
+      </div>
+
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='img/banner2.jpg') }}" class="d-block w-100">
+      </div>
+
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='img/banner3.jpg') }}" class="d-block w-100">
+      </div>
+
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#newsBannerCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#newsBannerCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+
+
+  <!-- 🔵 電影活動卡片區（整張可點） -->
+  <section class="activity-list">
+    <div class="activity-grid" id="activityGrid">
+
+      {% for act in activities %}
+      <a href="#" class="activity-card">
+        <img src="{{ url_for('static', filename='img/activities/' + act.img) }}" class="activity-img">
+        <div class="activity-title">{{ act.title }}</div>
+        <div class="activity-date">{{ act.date }}</div>
+        <div class="activity-tags">
+          {% for tag in act.tags %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </a>
+      {% endfor %}
+
+    </div>
+  </section>
+
+  <!-- 🔵 最新公告列表 -->
+  <h1 class="page-title">最新公告 / MORE</h1>
+
+  <div class="news-container">
+    {% for item in news_list %}
+    <a href="{{ url_for('news_detail', news_id=item.id) }}" class="news-row">
+        <div class="news-date">{{ item.date }}</div>
+        <div class="news-title">{{ item.title }}</div>
+        <div class="news-arrow">›</div>
+    </a>
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+document.querySelector(".search-btn").addEventListener("click", function () {
+
+  const keyword = document.querySelector(".search-input").value;
+  const theater = document.querySelector(".select-cinema").value;
+  const hall = document.querySelector(".select-category").value;
+  const start = document.querySelector(".date-start").value;
+  const end = document.querySelector(".date-end").value;
+  const ishow = document.querySelector(".ishow-check").checked;
+
+  fetch("/search_activities", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      keyword: keyword,
+      theater: theater,
+      hall: hall,
+      start_date: start,
+      end_date: end,
+      is_ishow: ishow
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const grid = document.querySelector("#activityGrid");
+    grid.innerHTML = "";
+
+    if (!data || data.length === 0){
+      grid.innerHTML = "<div style='padding:18px;color:#666;'>找不到符合條件的活動</div>";
+      return;
+    }
+
+    data.forEach(act => {
+      const tagsHtml = (act.tags || []).map(t => `<span class="tag">${t}</span>`).join("");
+
+      // ⚠️ 這裡保持「整張可點」：用 <a class="activity-card">
+      grid.innerHTML += `
+        <a href="#" class="activity-card">
+          <img src="/static/img/activities/${act.img}" class="activity-img">
+          <div class="activity-title">${act.title}</div>
+          <div class="activity-date">${act.date}</div>
+          <div class="activity-tags">${tagsHtml}</div>
+        </a>
+      `;
+    });
+  })
+});
+</script>
+
+{% endblock %}

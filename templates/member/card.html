@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}儲值卡 - 威力影城{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card">
+    <h1>儲值卡</h1>
+
+    {% if not user %}
+      <p>找不到會員資料，請重新登入。</p>
+    {% else %}
+
+      {% if message %}
+        <p style="color: green; margin-bottom: 10px;">{{ message }}</p>
+      {% endif %}
+      {% if error %}
+        <p style="color: red; margin-bottom: 10px;">{{ error }}</p>
+      {% endif %}
+
+      <p style="margin-bottom: 12px;">
+        會員：<strong>{{ user.username }}</strong><br>
+        目前餘額：<strong>{{ user.balance or 0 }} 元</strong>
+      </p>
+
+      <form method="POST">
+        <label>儲值金額（元）
+          <input type="number" name="amount" min="1" step="1" required placeholder="例如：500">
+        </label>
+
+        <button type="submit" class="auth-btn" style="margin-top: 12px;">
+          確認儲值
+        </button>
+      </form>
+
+      <div class="auth-links" style="margin-top: 16px;">
+        <a href="{{ url_for('member_profile') }}">返回會員資料</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

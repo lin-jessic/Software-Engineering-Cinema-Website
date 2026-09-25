@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}威秀影城重製版{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 先載入 Bootstrap，再載入自己的 CSS，比較好覆寫樣式 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <!-- 全站共用樣式 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+  <!-- 各頁面額外樣式（例如 home.css、theater.css 等） -->
+  {% block extra_css %}{% endblock %}
+</head>
+
+<script src="{{ url_for('static', filename='js/notice.js') }}"></script>
+
+<body>
+
+  <!-- 全站共用導覽列 -->
+  <header class="vs-navbar">
+    <div class="nav-inner">
+      <a href="{{ url_for('index') }}" class="nav-logo">
+        <img src="{{ url_for('static', filename='img/vieshow-logo.png') }}" alt="VIESHOW">
+      </a>
+<nav class="nav-links">
+
+  <a href="{{ url_for('theater') }}">影城介紹</a>
+  <a href="{{ url_for('movie_list') }}">電影介紹</a>
+  <a href="{{ url_for('food_index') }}">餐飲與商品</a>
+  <a href="{{ url_for('booking_select') }}">線上訂票</a>
+  <a href="{{ url_for('order_list') }}">訂票記錄</a>
+
+  {% if session.get("user") %}
+    <a href="{{ url_for('member_profile') }}">
+      👤 {{ session['user']['username'] }}
+    </a>
+    <span>｜</span>
+    <a href="{{ url_for('member_card') }}">儲值卡</a>
+    <span>｜</span>
+    <a href="{{ url_for('logout') }}" style="color: yellow;">登出</a>
+  {% else %}
+    <a href="{{ url_for('login') }}">登入</a>
+    <a href="{{ url_for('register') }}">註冊</a>
+  {% endif %}
+</nav>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="page-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- 全站 footer -->
+  <footer class="vs-footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <img src="{{ url_for('static', filename='img/cert.png') }}" alt="cert">
+        <span>
+          Copyright © 2025 威力影城 VIESHOW Cinemas. All Rights Reserved.
+          ｜關於威力｜人才招募｜電子發票｜隱私權政策｜網站地圖
+        </span>
+      </div>
+      <div class="footer-right">
+        V 105347635R10
+      </div>
+    </div>
+  </footer>
+
+  <!-- 自己的 JS -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <!-- Bootstrap JS（包含 Popper）-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  {% block extra_js %}{% endblock %}
+
+
+</body>
+</html>

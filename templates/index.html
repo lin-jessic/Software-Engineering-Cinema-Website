@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}威力影城首頁{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<style>
+/* 讓整行都可點，且維持你原本威秀風格 */
+.news-list li { list-style: none; }
+
+.news-link{
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.news-link:hover{
+  background: rgba(47, 99, 184, 0.08);
+  border-radius: 8px;
+}
+
+.news-more{
+  color: inherit;
+  text-decoration: none;
+}
+
+.news-more:hover{
+  text-decoration: underline;
+}
+
+/* ===== 公告 Overlay（威秀同款） ===== */
+.notice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.notice-overlay.show {
+  display: flex;
+}
+
+.notice-box {
+  max-width: 520px;
+  width: 90%;
+  background: #fff;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.notice-box img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- 頂部大 Banner -->
+<section class="hero-banner">
+  <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='img/banner1.jpg') }}" class="d-block w-100">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='img/banner2.jpg') }}" class="d-block w-100">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='img/banner3.jpg') }}" class="d-block w-100">
+      </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- 中段：快速訂票 + 最新公告 -->
+<section class="main-section">
+  <div class="main-inner">
+
+    <!-- 左邊：側邊灰色選單 + 藍色快速訂票框 -->
+    <div class="left-area">
+
+      <!-- 側邊灰色選單 -->
+    <ul class="side-menu">
+      <li class="active">
+        <a href="{{ url_for('booking_select') }}">線上訂票</a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" onclick="openNotice('ticket')">
+          售票公告
+        </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" onclick="openNotice('entry')">
+          入場通知
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('showtimes') }}">
+          場次查詢
+        </a>
+      </li>
+    </ul>
+
+      <!-- 藍色快速訂票框 -->
+      <div class="booking-panel">
+        <div class="booking-header">
+          <span class="title-left">快速訂票</span>
+        </div>
+
+        <div class="booking-fields">
+
+          <!-- 影城 -->
+          <div class="field">
+            <span class="icon">📍</span>
+            <select id="q_theater">
+              <option value="">請選擇影城</option>
+
+              <!-- 雙北 -->
+        <optgroup label="雙北">
+          <option {% if theater == "台北信義威力影城" %}selected{% endif %}>台北信義威力影城</option>
+          <option {% if theater == "台北京站威力影城" %}selected{% endif %}>台北京站威力影城</option>
+          <option {% if theater == "台北南港 LaLaport 威力影城" %}selected{% endif %}>台北南港 LaLaport 威力影城</option>
+          <option {% if theater == "台北西門威力影城" %}selected{% endif %}>台北西門威力影城</option>
+          <option {% if theater == "新北裕隆威力影城" %}selected{% endif %}>新北裕隆威力影城</option>
+          <option {% if theater == "新北板橋大遠百威力影城" %}selected{% endif %}>新北板橋大遠百威力影城</option>
+          <option {% if theater == "新北林口 MITSUI OUTLET PARK 威力影城" %}selected{% endif %}>新北林口 MITSUI OUTLET PARK 威力影城</option>
+          <option {% if theater == "中和環球威力影城" %}selected{% endif %}>中和環球威力影城</option>
+        </optgroup>
+
+        <!-- 桃竹苗 -->
+        <optgroup label="桃竹苗">
+          <option {% if theater == "桃園統領威力影城" %}selected{% endif %}>桃園統領威力影城</option>
+          <option {% if theater == "桃園桃知道威力影城" %}selected{% endif %}>桃園桃知道威力影城</option>
+          <option {% if theater == "新竹大遠百威力影城" %}selected{% endif %}>新竹大遠百威力影城</option>
+          <option {% if theater == "新竹巨城威力影城" %}selected{% endif %}>新竹巨城威力影城</option>
+          <option {% if theater == "頭份尚順威力影城" %}selected{% endif %}>頭份尚順威力影城</option>
+        </optgroup>
+
+        <!-- 中部 -->
+        <optgroup label="中部">
+          <option {% if theater == "台中大遠百威力影城" %}selected{% endif %}>台中大遠百威力影城</option>
+          <option {% if theater == "台中大魯閣新時代威力影城" %}selected{% endif %}>台中大魯閣新時代威力影城</option>
+        </optgroup>
+
+        <!-- 南部 -->
+        <optgroup label="南部">
+          <option {% if theater == "台南大遠百威力影城" %}selected{% endif %}>台南大遠百威力影城</option>
+          <option {% if theater == "台南 FOCUS 威力影城" %}selected{% endif %}>台南 FOCUS 威力影城</option>
+          <option {% if theater == "台南南紡威力影城" %}selected{% endif %}>台南南紡威力影城</option>
+          <option {% if theater == "高雄大遠百威力影城" %}selected{% endif %}>高雄大遠百威力影城</option>
+        </optgroup>
+
+        <!-- 東部 -->
+        <optgroup label="東部">
+          <option {% if theater == "花蓮新天堂樂園 威力影城" %}selected{% endif %}>花蓮新天堂樂園 威力影城</option>
+        </optgroup>
+      </select>
+
+          </div>
+
+          <!-- 日期 -->
+          <div class="field">
+            <span class="icon">📅</span>
+            <input type="date" id="q_date">
+          </div>
+
+          <!-- 電影 -->
+          <div class="field">
+            <span class="icon">🎬</span>
+            <select id="q_movie">
+              <option value="">請選擇影片</option>
+              {% for m in movies %}
+                {% if m.status == "now" %}
+                  <option value="{{ m.id }}">{{ m.title }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+
+
+          <!-- 場次 -->
+          <div class="field">
+            <span class="icon">🕒</span>
+            <select id="q_time">
+              <option value="">請選擇場次</option>
+              <option>12:30</option>
+              <option>15:00</option>
+              <option>18:00</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="booking-buttons">
+          <button class="btn-book" onclick="goBooking()">前往訂票</button>
+          <button class="btn-seat" onclick="openSeatModal()">查看座位</button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 右邊：最新公告 -->
+    <div class="right-area">
+      <div class="news-header">
+        <span class="news-title">最新公告</span>
+        <a class="news-more" href="{{ url_for('news_list_page') }}">/ MORE</a>
+      </div>
+
+      <ul class="news-list">
+        {% for n in news_list %}
+          <li>
+            <a class="news-link" href="{{ url_for('news_detail', news_id=n.id) }}">
+              <span class="news-date">{{ n.date }}</span>
+              <span class="news-text">{{ n.title }}</span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- 下方橫幅廣告條 -->
+<section class="ad-strip">
+  <div class="ad-inner">
+    <button class="ad-arrow ad-arrow-left">‹</button>
+    <div class="ad-track">
+      <img src="{{ url_for('static', filename='img/ad1.jpg') }}" alt="ad1">
+      <img src="{{ url_for('static', filename='img/ad2.jpg') }}" alt="ad2">
+      <img src="{{ url_for('static', filename='img/ad3.jpg') }}" alt="ad3">
+    </div>
+    <button class="ad-arrow ad-arrow-right">›</button>
+  </div>
+</section>
+
+<script>
+function goBooking() {
+  const theater = document.getElementById("q_theater").value;
+  const movie = document.getElementById("q_movie").value;
+  const date = document.getElementById("q_date").value;
+  const time = document.getElementById("q_time").value;
+
+  const url =
+    `/booking/select?theater=${encodeURIComponent(theater)}&movie=${encodeURIComponent(movie)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
+
+  window.location.href = url;
+}
+
+function goSeat() {
+  const theater = document.getElementById("q_theater").value;
+  const movie = document.getElementById("q_movie").value;
+  const date = document.getElementById("q_date").value;
+  const time = document.getElementById("q_time").value;
+
+  if (!theater || !movie || !date || !time) {
+    alert("請先完成影城 / 電影 / 日期 / 場次的選擇！");
+    return;
+  }
+
+  const url =
+    `/booking/seat?theater=${encodeURIComponent(theater)}&movie=${encodeURIComponent(movie)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
+
+  window.location.href = url;
+}
+</script>
+<script>
+function openSeatModal() {
+  const theater = document.getElementById("q_theater").value;
+  const movieSelect = document.getElementById("q_movie");
+  const movieText = movieSelect.options[movieSelect.selectedIndex].text;
+  const date = document.getElementById("q_date").value;
+  const time = document.getElementById("q_time").value;
+
+  if (!theater || !movieText || !date || !time) {
+    alert("請先完成影城 / 電影 / 日期 / 場次的選擇！");
+    return;
+  }
+
+  // ⭐⭐⭐ 關鍵：把值寫進座位資訊 ⭐⭐⭐
+  document.getElementById("seatMovieTitle").innerText = movieText;
+  document.getElementById("seatDate").innerText = "📅 " + date;
+  document.getElementById("seatTime").innerText = "🕒 " + time;
+  document.getElementById("seatTheater").innerText = "📍 " + theater;
+  document.getElementById("seatHall").innerText = "🎥 第 8 廳";
+
+  document.getElementById("seatModal").classList.remove("hidden");
+  generateSeats();
+}
+
+function closeSeatModal() {
+  document.getElementById("seatModal").classList.add("hidden");
+}
+</script>
+<script>
+function generateSeats() {
+  const seatMap = document.getElementById("seatMap");
+  seatMap.innerHTML = "";
+
+  const rows = 6;   // 6 排
+  const cols = 10;  // 每排 10 個
+
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const seat = document.createElement("div");
+      seat.classList.add("seat");
+
+      // 威秀那種：全部可選（或你要再加隨機）
+      const isSold = Math.random() < 0.2; // 20% 已售
+      seat.classList.add(isSold ? "sold" : "available");
+
+      seat.textContent = "A"; // 官方就是只顯示 A
+      seatMap.appendChild(seat);
+    }
+  }
+}
+</script>
+
+
+</script>
+
+
+<!-- ===== 公告彈出視窗 Overlay ===== -->
+<div id="noticeOverlay" class="notice-overlay" onclick="closeNotice(event)">
+  <div class="notice-box">
+    <img id="noticeImg" src="" alt="公告圖片">
+  </div>
+</div>
+
+<!-- ===== 座位選擇彈窗（官方風格，僅顯示） ===== -->
+<div id="seatModal" class="seat-modal hidden">
+  <div class="seat-modal-content">
+
+    <button class="seat-close" onclick="closeSeatModal()">關閉視窗</button>
+
+<div class="seat-info">
+  <h2 id="seatMovieTitle">電影名稱</h2>
+
+  <div class="seat-meta">
+    <span id="seatDate">📅 日期</span>
+    <span id="seatTime">🕒 時間</span>
+  </div>
+
+  <div class="seat-meta">
+    <span id="seatTheater">📍 影城</span>
+    <span id="seatHall">🎥 第 8 廳</span>
+  </div>
+</div>
+
+
+<div class="screen-title">銀幕位置</div>
+
+
+    <div id="seatMap" class="seat-map">
+      <!-- JS 動態產生座位 -->
+    </div>
+
+    <div class="seat-legend">
+      <span class="legend sold"></span> 已售出
+      <span class="legend available"></span> 可選座位
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

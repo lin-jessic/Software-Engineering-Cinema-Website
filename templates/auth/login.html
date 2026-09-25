@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}會員登入 - 威力影城{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card">
+    <h1>會員登入</h1>
+
+
+    {# ✅ 註冊成功：只用這個卡片內綠色提示 #}
+    {% if request.args.get("registered") %}
+      <div class="success-msg">
+        註冊成功！請登入～
+      </div>
+    {% endif %}
+
+    {% if request.args.get("reset") == "success" %}
+      <div class="success-msg">
+        密碼修改成功！請重新登入～
+      </div>
+    {% endif %}
+
+    {# ✅ 只顯示非 success 的 flash（避免成功訊息跑出來） #}
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        {% for c, m in msgs %}
+          {% if c != 'success' %}
+            <div class="flash-msg {{ c }}">{{ m }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {# ✅ 你原本的 error（如果你 login route 用 error 變數） #}
+    {% if error %}
+      <div class="flash-msg error">{{ error }}</div>
+    {% endif %}
+
+    <form action="{{ url_for('login') }}" method="POST">
+      <label>電子郵件
+        <input type="email" name="email" placeholder="請輸入Email" required value="{{ email or '' }}">
+      </label>
+
+      <label>密碼
+        <input type="password" name="password" placeholder="請輸入密碼" required>
+      </label>
+
+      <button type="submit" class="auth-btn">登入</button>
+    </form>
+
+    <div class="auth-links">
+      <a href="{{ url_for('forgot') }}">忘記密碼</a>
+      <span>｜</span>
+      <a href="{{ url_for('register') }}">加入會員</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

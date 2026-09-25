@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}影城介紹{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theater.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="theater-section">
+  <div class="theater-wrap">
+
+    <!-- 雙北 -->
+    <h2 class="area-title">雙北</h2>
+    <div class="theater-grid">
+      {% for t in theaters if t.region == "雙北" %}
+      <!-- 這裡改成 <a>，href 連到 /theater/<id> -->
+      <a href="{{ url_for('theater_detail', theater_id=t.id) }}" class="theater-card">
+        <img src="{{ url_for('static', filename='img/' + t.img) }}" alt="{{ t.name }}">
+        <div class="info">
+          <h3>{{ t.name }}</h3>
+          <p class="addr">📍 {{ t.address }}</p>
+          <p class="tel">📞 {{ t.tel }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- 桃竹苗 -->
+    <h2 class="area-title">桃竹苗</h2>
+    <div class="theater-grid">
+      {% for t in theaters if t.region == "桃竹苗" %}
+      <a href="{{ url_for('theater_detail', theater_id=t.id) }}" class="theater-card">
+        <img src="{{ url_for('static', filename='img/' + t.img) }}" alt="{{ t.name }}">
+        <div class="info">
+          <h3>{{ t.name }}</h3>
+          <p class="addr">📍 {{ t.address }}</p>
+          <p class="tel">📞 {{ t.tel }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- 中部 -->
+    <h2 class="area-title">中部</h2>
+    <div class="theater-grid">
+      {% for t in theaters if t.region == "中部" %}
+      <a href="{{ url_for('theater_detail', theater_id=t.id) }}" class="theater-card">
+        <img src="{{ url_for('static', filename='img/' + t.img) }}" alt="{{ t.name }}">
+        <div class="info">
+          <h3>{{ t.name }}</h3>
+          <p class="addr">📍 {{ t.address }}</p>
+          <p class="tel">📞 {{ t.tel }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- 南部 -->
+    <h2 class="area-title">南部</h2>
+    <div class="theater-grid">
+      {% for t in theaters if t.region == "南部" %}
+      <a href="{{ url_for('theater_detail', theater_id=t.id) }}" class="theater-card">
+        <img src="{{ url_for('static', filename='img/' + t.img) }}" alt="{{ t.name }}">
+        <div class="info">
+          <h3>{{ t.name }}</h3>
+          <p class="addr">📍 {{ t.address }}</p>
+          <p class="tel">📞 {{ t.tel }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- 東部 -->
+    <h2 class="area-title">東部</h2>
+    <div class="theater-grid">
+      {% for t in theaters if t.region == "東部" %}
+      <a href="{{ url_for('theater_detail', theater_id=t.id) }}" class="theater-card">
+        <img src="{{ url_for('static', filename='img/' + t.img) }}" alt="{{ t.name }}">
+        <div class="info">
+          <h3>{{ t.name }}</h3>
+          <p class="addr">📍 {{ t.address }}</p>
+          <p class="tel">📞 {{ t.tel }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,270 @@
+/* ================== 影城列表頁 ================== */
+
+/* 針對影城列表頁強制左右留白（記得在 theater.html 的 <body> 加上 class="page-theater"） */
+/* 全頁背景白 */
+body.page-theater {
+  background: #ffffff !important;
+}
+
+
+/* 包住整個影城列表的外框 */
+.theater-wrap {
+  max-width: 1100px;      /* 比 1200 再窄一點，看起來比較集中 */
+  margin: 40px auto;
+  padding: 0 32px;        /* 左右多一點內距，就不會貼到螢幕邊 */
+}
+
+/* 區域標題：雙北 / 桃竹苗 / 中部 / 南部 / 東部 */
+.area-title {
+  color: #1E4A8F;
+  font-size: 28px;
+  margin: 32px 0 16px;
+  font-weight: 700;
+}
+
+/* 雙欄排版：每列兩間影城 */
+.theater-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 30px;       /* 左右兩欄的間距 */
+  row-gap: 18px;          /* 上下列之間的距離 */
+  margin-bottom: 32px;
+}
+
+/* 單一影城卡片：整張白色區塊 */
+.theater-card {
+  display: flex;
+  gap: 18px;
+  padding: 18px 20px;
+  background: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  /* 不要再加 margin-bottom，間距交給 .theater-grid 管 */
+}
+
+.theater-card:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.16);
+  transform: translateY(-1px);
+}
+
+.theater-card img {
+  width: 260px;           /* 稍微縮小一點，文字區會更靠近 */
+  height: 160px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* 文字區 */
+.info h3 {
+  font-size: 20px;
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.addr,
+.tel {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ================== 影城詳細頁：共用框架 ================== */
+
+.theater-detail {
+  max-width: 1200px;
+  margin: 0 auto 40px;
+  padding: 0 20px 40px;
+}
+
+/* 上方大圖 Banner */
+.theater-banner img {
+  width: 100%;
+  display: block;
+}
+
+/* 標題區：麵包屑 + 標題 + 右側切換 */
+.theater-header {
+  margin-top: 16px;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.theater-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.theater-title-row h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+/* 右邊切換影城 */
+.theater-switch {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.theater-switch select {
+  padding: 6px 10px;
+  font-size: 13px;
+  min-width: 260px;
+}
+
+/* ================== 上方介紹文字 ================== */
+
+.theater-intro {
+  margin-top: 32px;
+  font-size: 16px;
+  line-height: 1.9;
+  color: #333;
+}
+
+.theater-intro p {
+  margin-bottom: 16px;
+}
+
+.theater-intro .intro-subtitle {
+  font-weight: 600;
+  margin-top: 24px;
+}
+
+.theater-intro .intro-list {
+  padding-left: 1.5em;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.theater-intro .intro-list li {
+  margin-bottom: 4px;
+}
+
+/* ================== AD 服務區塊 ================== */
+
+.theater-ad-box {
+  margin-top: 32px;
+  padding: 16px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.ad-title {
+  font-size: 16px;
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.ad-link {
+  color: #d02020;
+}
+
+/* ================== 三張縮圖區 ================== */
+
+.theater-gallery {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.theater-gallery img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+/* ================== 影城資訊 + 地圖 ================== */
+
+.theater-info-block {
+  margin-top: 40px;
+  padding: 40px 0 60px;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* 左側文字區（影城資訊） */
+.theater-info-block .info-left {
+  flex: 1.1;             /* 比原本再瘦一點，讓地圖區多一點空間 */
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.theater-info-block h2 {
+  font-size: 22px;
+  color: #1E4A8F;
+  margin: 0 0 20px;
+}
+
+.info-item {
+  margin-bottom: 18px;
+}
+
+.info-label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.info-item p {
+  margin: 0;
+}
+
+/* 右側地圖區 */
+.theater-info-block .info-map {
+  flex: 1.8;             /* 地圖比文字寬，視覺上更偏右 */
+  margin-left: auto;     /* 把整個地圖區推到容器最右邊 */
+}
+
+/* 針對 Google Maps iframe */
+.theater-info-block .info-map iframe {
+  width: 100%;
+  min-height: 600px;
+  border: 0;
+  border-radius: 4px;
+}
+
+/* 如果沒有地圖，用這個佔位 */
+.map-placeholder {
+  width: 100%;
+  min-height: 260px;
+  border-radius: 4px;
+  border: 1px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+}
+
+/* ================== RWD ================== */
+
+@media (max-width: 960px) {
+  .theater-info-block {
+    flex-direction: column;
+  }
+
+  .theater-info-block .info-map {
+    margin-left: 0;
+    margin-top: 16px;
+  }
+
+  .theater-info-block .info-map iframe {
+    min-height: 300px;
+  }
+}
+

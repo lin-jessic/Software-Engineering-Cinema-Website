@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}電影介紹 - 威力影城{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/movies.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="movies-breadcrumb">
+  首頁 &gt; <span>熱售中</span>
+</div>
+
+<section class="movies-section">
+  <h1 class="movies-title">熱售中</h1>
+
+  <div class="movie-grid">
+    {% for movie in hot_movies %}
+      <article class="movie-card">
+        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="poster-wrap">
+          <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster">
+          {% if movie.ribbon %}
+            <div class="movie-ribbon">{{ movie.ribbon }}</div>
+          {% endif %}
+        </a>
+
+        <div class="movie-tags">
+          {% for tag in movie.tags or [] %}
+            <span class="movie-tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+
+        <div class="movie-text">
+          <h2 class="movie-title-zh">{{ movie.title }}</h2>
+          {% if movie.title_en %}
+            <p class="movie-title-en">{{ movie.title_en }}</p>
+          {% endif %}
+          <p class="movie-date">{{ movie.release_date }}</p>
+        </div>
+
+        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-more-btn">more</a>
+      </article>
+    {% endfor %}
+  </div>
+
+  {% if coming_movies %}
+    <h1 class="movies-title" style="margin-top:40px;">即將上映</h1>
+    <div class="movie-grid">
+      {% for movie in coming_movies %}
+        <article class="movie-card">
+          <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="poster-wrap">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="movie-poster">
+            {% if movie.ribbon %}
+              <div class="movie-ribbon">{{ movie.ribbon }}</div>
+            {% endif %}
+          </a>
+
+          <div class="movie-tags">
+            {% for tag in movie.tags or [] %}
+              <span class="movie-tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+
+          <div class="movie-text">
+            <h2 class="movie-title-zh">{{ movie.title }}</h2>
+            {% if movie.title_en %}
+              <p class="movie-title-en">{{ movie.title_en }}</p>
+            {% endif %}
+            <p class="movie-date">{{ movie.release_date }}</p>
+          </div>
+
+          <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="movie-more-btn">more</a>
+        </article>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

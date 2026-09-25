@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="movie-detail-container">
+    <div class="poster">
+        <img src="{{ movie.poster }}" alt="{{ movie.title_cn }}">
+    </div>
+
+    <div class="movie-info">
+        <h2>{{ movie.title_cn }}</h2>
+        <h3 class="eng">{{ movie.title_en }}</h3>
+
+        <p><strong>上映日期：</strong>{{ movie.release_date }}</p>
+        <p><strong>片長：</strong>{{ movie.length }} 分鐘</p>
+        <p><strong>導演：</strong>{{ movie.director }}</p>
+        <p><strong>主演：</strong>{{ movie.cast }}</p>
+
+        <div class="tags">
+            {% for tag in movie.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+
+        <p class="summary">{{ movie.description }}</p>
+
+        <a href="/booking/{{ movie.id }}" class="btn-buy">立即訂票</a>
+    </div>
+</section>
+
+<section class="trailer">
+    <h2>預告片</h2>
+    <iframe width="900" height="480"
+        src="{{ movie.trailer }}"
+        title="YouTube video player"
+        frameborder="0"
+        allowfullscreen>
+    </iframe>
+</section>
+
+{% endblock %}

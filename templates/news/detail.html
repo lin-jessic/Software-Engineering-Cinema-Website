@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/news.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="news-page">
+
+  <!-- breadcrumb -->
+  <div class="news-breadcrumb">
+    <a href="{{ url_for('index') }}">首頁</a>
+    <span>&gt;</span>
+    <a href="{{ url_for('news_list_page') }}#activity">活動公告</a>
+
+    <span>&gt;</span>
+    <span class="current">{{ article.category or '影城公告' }}</span>
+  </div>
+
+  <div class="news-container">
+    <div class="news-date-row">
+      <span class="news-icon">🗓</span>
+      <span class="news-date">{{ article.date }}</span>
+    </div>
+
+    <h1 class="news-title">{{ article.title }}</h1>
+
+    <div class="news-content">
+      {{ (article.content_html or article.content or "") | safe }}
+    </div>
+
+    <div class="news-actions">
+      <a class="back-btn" href="{{ url_for('index') }}">◀ 回上一頁</a>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}線上訂票 - 選擇場次{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+  /* 讓 disabled 狀態比較明顯一點 */
+  .booking-next-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section">
+  <h1>線上訂票 - 選擇場次</h1>
+
+  {% with messages = get_flashed_messages(category_filter=['error']) %}
+    {% if messages %}
+      <div class="alert-error">
+        {{ messages[0] }}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form class="booking-form" action="{{ url_for('booking_select') }}" method="post">
+    <!-- 影城 -->
+    <label>影城
+      <select name="theater" id="q_theater">
+        <option value="">請選擇影城</option>
+
+        <!-- 雙北 -->
+        <optgroup label="雙北">
+          <option {% if selected_theater == "台北信義威力影城" %}selected{% endif %}>台北信義威力影城</option>
+          <option {% if selected_theater == "台北京站威力影城" %}selected{% endif %}>台北京站威力影城</option>
+          <option {% if selected_theater == "台北南港 LaLaport 威力影城" %}selected{% endif %}>台北南港 LaLaport 威力影城</option>
+          <option {% if selected_theater == "台北西門威力影城" %}selected{% endif %}>台北西門威力影城</option>
+          <option {% if selected_theater == "新北裕隆威力影城" %}selected{% endif %}>新北裕隆威力影城</option>
+          <option {% if selected_theater == "新北板橋大遠百威力影城" %}selected{% endif %}>新北板橋大遠百威力影城</option>
+          <option {% if selected_theater == "新北林口 MITSUI OUTLET PARK 威力影城" %}selected{% endif %}>新北林口 MITSUI OUTLET PARK 威力影城</option>
+          <option {% if selected_theater == "中和環球威力影城" %}selected{% endif %}>中和環球威力影城</option>
+        </optgroup>
+
+        <!-- 桃竹苗 -->
+        <optgroup label="桃竹苗">
+          <option {% if selected_theater == "桃園統領威力影城" %}selected{% endif %}>桃園統領威力影城</option>
+          <option {% if selected_theater == "桃園桃知道威力影城" %}selected{% endif %}>桃園桃知道威力影城</option>
+          <option {% if selected_theater == "新竹大遠百威力影城" %}selected{% endif %}>新竹大遠百威力影城</option>
+          <option {% if selected_theater == "新竹巨城威力影城" %}selected{% endif %}>新竹巨城威力影城</option>
+          <option {% if selected_theater == "頭份尚順威力影城" %}selected{% endif %}>頭份尚順威力影城</option>
+        </optgroup>
+
+        <!-- 中部 -->
+        <optgroup label="中部">
+          <option {% if selected_theater == "台中大遠百威力影城" %}selected{% endif %}>台中大遠百威力影城</option>
+          <option {% if selected_theater == "台中大魯閣新時代威力影城" %}selected{% endif %}>台中大魯閣新時代威力影城</option>
+        </optgroup>
+
+        <!-- 南部 -->
+        <optgroup label="南部">
+          <option {% if selected_theater == "台南大遠百威力影城" %}selected{% endif %}>台南大遠百威力影城</option>
+          <option {% if selected_theater == "台南 FOCUS 威力影城" %}selected{% endif %}>台南 FOCUS 威力影城</option>
+          <option {% if selected_theater == "台南南紡威力影城" %}selected{% endif %}>台南南紡威力影城</option>
+          <option {% if selected_theater == "高雄大遠百威力影城" %}selected{% endif %}>高雄大遠百威力影城</option>
+        </optgroup>
+
+        <!-- 東部 -->
+        <optgroup label="東部">
+          <option {% if selected_theater == "花蓮新天堂樂園 威力影城" %}selected{% endif %}>花蓮新天堂樂園 威力影城</option>
+        </optgroup>
+      </select>
+    </label>
+
+    <!-- 電影 -->
+    <label>電影
+      <select name="movie" id="q_movie">
+        <option value="">請選擇電影</option>
+        {% for m in movies %}
+          {% if m.status == "now" %}
+            <option value="{{ m.id }}"
+              {% if selected_movie == m.id|string %}selected{% endif %}>
+              {{ m.title }}
+            </option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </label>
+
+    <!-- 日期 -->
+    <label>日期
+     <input type="date" name="date" id="q_date" value="{{ selected_date }}">
+    </label>
+
+    <!-- 場次 -->
+    <label>場次
+      <select name="time" id="q_time">
+        <option value="">請選擇場次</option>
+        <option value="12:30" {% if selected_time == "12:30" %}selected{% endif %}>12:30</option>
+        <option value="15:00" {% if selected_time == "15:00" %}selected{% endif %}>15:00</option>
+        <option value="18:00" {% if selected_time == "18:00" %}selected{% endif %}>18:00</option>
+      </select>
+    </label>
+
+    <button type="submit" class="booking-next-btn" id="nextBtn" disabled>
+      下一步：選擇票種 / 餐飲
+    </button>
+  </form>
+</section>
+
+<script>
+  (function () {
+    const theaterSelect = document.getElementById("q_theater");
+    const movieSelect   = document.getElementById("q_movie");
+    const dateInput     = document.getElementById("q_date");
+    const timeSelect    = document.getElementById("q_time");
+    const nextBtn       = document.getElementById("nextBtn");
+
+    // 固定的場次清單（你之後如果要依影城/電影客製，可以從這裡擴充）
+    const baseTimes = ["12:30", "15:00", "18:00"];
+
+    function repopulateTimes() {
+      const selectedDate = dateInput.value;
+      const today = new Date();
+      let validTimes = baseTimes.slice(); // 複製一份
+
+      if (selectedDate) {
+        const picked = new Date(selectedDate + "T00:00:00");
+        const isToday =
+          picked.getFullYear() === today.getFullYear() &&
+          picked.getMonth() === today.getMonth() &&
+          picked.getDate() === today.getDate();
+
+        if (isToday) {
+          // 只保留「現在時間之後」的場次
+          const nowMinutes = today.getHours() * 60 + today.getMinutes();
+          validTimes = baseTimes.filter(t => {
+            const [h, m] = t.split(":").map(Number);
+            const mins = h * 60 + m;
+            return mins > nowMinutes;
+          });
+        }
+      }
+
+      // 重新塞選項
+      const current = timeSelect.value;
+      timeSelect.innerHTML = ""; // 清空
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "請選擇場次";
+      timeSelect.appendChild(placeholder);
+
+      validTimes.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        if (t === current) {
+          opt.selected = true;
+        }
+        timeSelect.appendChild(opt);
+      });
+
+      // 如果原本選的時間已經不在 validTimes 內，就清空
+      if (!validTimes.includes(current)) {
+        timeSelect.value = "";
+      }
+    }
+
+    function updateButtonState() {
+      const theater = theaterSelect.value.trim();
+      const movie   = movieSelect.value.trim();
+      const date    = dateInput.value.trim();
+      const time    = timeSelect.value.trim();
+
+      const allFilled = theater && movie && date && time;
+
+      if (allFilled) {
+        nextBtn.disabled = false;
+      } else {
+        nextBtn.disabled = true;
+      }
+    }
+
+    // 當劇院 / 電影 / 日期變動時，可以順便重算可用場次
+    function onAnyChange() {
+      repopulateTimes();
+      updateButtonState();
+    }
+
+    theaterSelect.addEventListener("change", onAnyChange);
+    movieSelect.addEventListener("change", onAnyChange);
+    dateInput.addEventListener("change", onAnyChange);
+    timeSelect.addEventListener("change", updateButtonState);
+
+    // 一進來先跑一次（處理從上一頁回來、有舊值的情況）
+    repopulateTimes();
+    updateButtonState();
+  })();
+</script>
+{% endblock %}

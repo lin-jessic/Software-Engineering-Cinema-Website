@@ -1,0 +1,150 @@
+.auth-section {
+  padding: 40px 0;
+}
+
+.auth-card {
+  max-width: 420px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.auth-card h1 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #2f63b8;
+}
+
+.auth-card form label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="password"],
+.auth-card input[type="tel"],
+.auth-card input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-row input {
+  margin-right: 6px;
+}
+
+.auth-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px 0;
+  border-radius: 4px;
+  border: none;
+  background: #2f63b8;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.auth-links {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-links a {
+  color: #2f63b8;
+}
+
+.auth-desc {
+  font-size: 14px;
+  color: #555;
+}
+
+.auth-card select {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 14px;
+  background-color: #fff;
+
+  /* 移除瀏覽器原生樣式 */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* 右側箭頭 */
+  background-image:
+    linear-gradient(45deg, transparent 50%, #666 50%),
+    linear-gradient(135deg, #666 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+
+/* =========================
+   忘記密碼題目 + 答案：兩欄排版
+   ========================= */
+.auth-card .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* 手機版自動變一欄 */
+@media (max-width: 480px) {
+  .auth-card .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flash-msg {
+  border-radius: 6px;
+  padding: 12px;
+  margin: 12px 0 16px;
+  font-size: 14px;
+}
+
+.flash-msg.error {
+  background: #fdecea;
+  color: #b71c1c;
+  border: 1px solid #f5c6cb;
+}
+
+.success-msg{
+  background:#eaf7ea;
+  border:1px solid #bfe5bf;
+  color:#2e7d32;
+  padding:14px 18px;
+  border-radius:8px;
+  margin:12px 0 18px;
+  font-size:18px;
+  font-weight:700;
+}
+
+.error-msg{
+  background:#fdecec;
+  border:1px solid #f5b5b5;
+  color:#b42318;
+  padding:14px 18px;
+  border-radius:8px;
+  margin:12px 0 18px;
+  font-size:18px;
+  font-weight:700;
+}

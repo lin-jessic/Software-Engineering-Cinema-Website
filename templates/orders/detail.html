@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}訂單詳情{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+  .order-detail-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .order-detail-box {
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  }
+
+  .order-row {
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+
+  .order-label {
+    display: inline-block;
+    min-width: 110px;
+    color: #6b7280;
+  }
+
+  .order-buttons {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: #334155;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    background: #f1f5f9;
+  }
+
+  .btn-danger {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #b91c1c;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .btn-danger[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+
+  .status-pill {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 14px;
+  }
+
+  .order-layout {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    align-items: flex-start;
+  }
+
+  .order-info-box {
+    flex: 1;
+  }
+
+  .order-poster-box {
+    width: 260px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .order-poster-box img {
+    width: 100%;
+    max-width: 260px;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  }
+
+  .poster-img {
+    width: 100%;
+    max-width: 260px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+  /* 新增：退票提示 */
+  .order-alert {
+    margin-top: 10px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #fef3c7;    /* 淡黃色 */
+    color: #92400e;         /* 深橘色字 */
+    font-size: 14px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section">
+  <div class="order-detail-wrapper">
+    <h1>訂單詳情</h1>
+
+    <div class="order-layout">
+      <!-- 左側：訂單資訊 -->
+      <div class="order-detail-box order-info-box">
+
+        <div class="order-row">
+          <span class="order-label">訂單編號：</span>{{ order.id }}
+          {% if order.status %}
+            &nbsp;&nbsp;
+            <span class="status-pill"
+                  style="background:#eef2ff;color:#4338ca;">
+              {{ order.status }}
+            </span>
+          {% endif %}
+        </div>
+
+        {# ⭐ 退票提示訊息：只有儲值卡付款 & 已退票才顯示 #}
+        {% if order.status == '已退票' and order.payment_method == 'card' %}
+        <div class="order-alert">
+          此筆訂單已退票，已退回儲值金額。
+        </div>
+        {% endif %}
+
+        <div class="order-row">
+          <span class="order-label">電影名稱：</span>{{ order.movie_title_display }}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">影城：</span>{{ order.theater }}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">場次：</span>{{ order.date }} {{ order.time }}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">座位：</span>{{ order.seats or '未選擇' }}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">票種：</span>
+          全票 {{ order.adult_count or 0 }} 張，
+          學生票 {{ order.student_count or 0 }} 張，
+          共 {{ order.ticket_count }} 張
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">餐飲：</span>
+          {% if order.food_detail %}
+            {{ order.food_detail }}
+          {% else %}
+            無
+          {% endif %}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">付款方式：</span>
+          {{ order.payment_method_display or order.payment_method or '未指定' }}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">總金額：</span>${{ order.total_price or 0 }}
+        </div>
+
+        <div class="order-row">
+          <span class="order-label">建立時間：</span>{{ order.created_at }}
+        </div>
+
+        <div class="order-buttons">
+          <a href="{{ url_for('order_list') }}" class="btn-secondary">
+            回訂票紀錄
+          </a>
+
+          {% if order.status != '已退票' %}
+            <a href="{{ url_for('order_cancel', order_id=order.id) }}"
+               class="btn-danger"
+               onclick="return confirm('確認取消此訂票？');">
+              我要退票
+            </a>
+          {% else %}
+            <button class="btn-danger" disabled>已退票</button>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <!-- 右側：電影海報 -->
+      {% if order.poster_url %}
+      <div class="order-poster-box">
+        <img class="poster-img" src="{{ order.poster_url }}" alt="{{ order.movie_title_display }}">
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

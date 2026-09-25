@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}線上訂票 - 票種{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+  .item-box {
+    background: #f4f4f7;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
+
+  .count-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .btn-count {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: #2e74ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .btn-count:active {
+    transform: scale(0.95);
+  }
+
+  .count-number {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .total-price {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 25px 0;
+  }
+
+  .session-info {
+    background: #fff7e6;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* 按鈕狀態 */
+  #nextBtn:disabled {
+    background: #bfc4d1;
+    cursor: not-allowed;
+  }
+  #nextBtn.active {
+    background: #4c6ef5;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section">
+  <h1>線上訂票 - 票種</h1>
+
+  <!-- 場次資訊提示 -->
+  <div class="booking-summary-box">
+    <p>影城：{{ theater or '未選擇' }}</p>
+    <p>電影：{{ movie or '未選擇' }}</p>
+    <p>日期：{{ date or '未選擇' }}</p>
+    <p>時間：{{ time or '未選擇' }}</p>
+  </div>
+
+  <!-- 送到 booking_ticket，方法用 POST -->
+  <form action="{{ url_for('booking_ticket') }}" method="post">
+
+    <!-- 把場次資訊一起送去後端 -->
+    <input type="hidden" name="theater" value="{{ theater }}">
+    <input type="hidden" name="movie"   value="{{ movie }}">
+    <input type="hidden" name="date"    value="{{ date }}">
+    <input type="hidden" name="time"    value="{{ time }}">
+
+    <!-- 全票 -->
+    <div class="item-box">
+      <h2>全票</h2>
+      <p>$300</p>
+      <div class="count-box">
+        <button type="button" class="btn-count" onclick="changeCount('adult', -1)">−</button>
+        <span id="adult-count" class="count-number">0</span>
+        <button type="button" class="btn-count" onclick="changeCount('adult', 1)">+</button>
+      </div>
+    </div>
+
+    <!-- 學生票 -->
+    <div class="item-box">
+      <h2>學生票</h2>
+      <p>$260</p>
+      <div class="count-box">
+        <button type="button" class="btn-count" onclick="changeCount('student', -1)">−</button>
+        <span id="student-count" class="count-number">0</span>
+        <button type="button" class="btn-count" onclick="changeCount('student', 1)">+</button>
+      </div>
+    </div>
+
+    <!-- 隱藏欄位（送到後端） -->
+    <input type="hidden" name="adult"   id="adult-input"   value="0">
+    <input type="hidden" name="student" id="student-input" value="0">
+    <input type="hidden" name="total_price" id="total-input" value="0">
+
+    <!-- 顯示總金額（僅票種） -->
+    <p class="total-price">總金額：$<span id="total">0</span></p>
+
+    <!-- 下一步 -->
+    <button type="submit" id="nextBtn" class="booking-next-btn" disabled>
+      下一步：選擇餐飲
+    </button>
+  </form>
+</section>
+
+<script>
+  // 單價
+  const basePrices = { adult: 300, student: 260 };
+
+  // 數量
+  const counts = { adult: 0, student: 0 };
+
+  function changeCount(type, value) {
+    counts[type] = Math.max(0, counts[type] + value);
+
+    // 更新畫面上的數字
+    document.getElementById(type + "-count").textContent = counts[type];
+    // 更新隱藏欄位
+    document.getElementById(type + "-input").value = counts[type];
+
+    updateTotalAndButton();
+  }
+
+  // 計算票種總金額 + 控制按鈕狀態
+  function updateTotalAndButton() {
+    const total =
+      counts.adult * basePrices.adult +
+      counts.student * basePrices.student;
+
+    document.getElementById("total").textContent = total;
+    document.getElementById("total-input").value = total;
+
+    const nextBtn = document.getElementById("nextBtn");
+    const ticketCount = counts.adult + counts.student;
+
+    if (ticketCount > 0) {
+      nextBtn.disabled = false;
+      nextBtn.classList.add("active");
+    } else {
+      nextBtn.disabled = true;
+      nextBtn.classList.remove("active");
+    }
+  }
+
+  // 初始化（確保一開始是 0 元＋按鈕關閉）
+  document.addEventListener("DOMContentLoaded", updateTotalAndButton);
+</script>
+
+{% endblock %}

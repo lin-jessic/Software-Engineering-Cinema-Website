@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - 威秀影城{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/movies.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="movies-breadcrumb">
+  首頁 &gt; <a href="{{ url_for('movie_list') }}">熱售中</a> &gt;
+  <span>{{ movie.title }}</span>
+</div>
+
+<section class="movie-detail-section">
+  <div class="detail-main">
+    <div class="detail-poster">
+      <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+    </div>
+
+    <div class="detail-info">
+      <h1 class="movie-title-zh">{{ movie.title }}</h1>
+      {% if movie.title_en %}
+        <h2 class="movie-title-en">{{ movie.title_en }}</h2>
+      {% endif %}
+
+      <p><strong>上映日期：</strong>{{ movie.release_date }}</p>
+      {% if movie.runtime %}
+        <p><strong>片長：</strong>{{ movie.runtime }} 分鐘</p>
+      {% endif %}
+      {% if movie.director %}
+        <p><strong>導演：</strong>{{ movie.director }}</p>
+      {% endif %}
+      {% if movie.cast %}
+        <p><strong>演員：</strong>{{ movie.cast }}</p>
+      {% endif %}
+      {% if movie.genre %}
+        <p><strong>類型：</strong>{{ movie.genre }}</p>
+      {% endif %}
+
+      <div class="movie-tags">
+        {% for tag in movie.tags or [] %}
+          <span class="movie-tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+
+      {% if movie.description %}
+        <h3 class="detail-section-title">劇情簡介</h3>
+        <p class="movie-summary">{{ movie.description }}</p>
+      {% endif %}
+
+      <a href="{{ url_for('booking_select', movie=movie.id) }}" class="detail-book-btn">
+        立即訂票
+      </a>
+
+    </div>
+  </div>
+
+  {% if movie.trailer_url %}
+    <div class="detail-trailer">
+      <h3 class="detail-section-title">預告片</h3>
+      <div class="trailer-frame-wrap">
+        <iframe
+          src="{{ movie.trailer_url }}"
+          title="trailer"
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

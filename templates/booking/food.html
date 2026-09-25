@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+{% block title %}選擇餐飲{% endblock %}
+
+{% block extra_css %}
+<style>
+.food-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.food-title {
+    font-size: 34px;
+    margin-bottom: 40px;
+    color: #2a3a6b;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 顯示場次＋票種資訊（可選） */
+.booking-info {
+    background: #fff7e6;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 35px;
+}
+
+.food-item {
+    border: 1px solid #ddd;
+    padding: 30px;
+    border-radius: 18px;
+    background: #fafafa;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: 0.25s;
+}
+
+.food-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.food-img {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    margin-bottom: 18px;
+}
+
+.food-item h5 {
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.size-select {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #bbb;
+    margin-bottom: 18px;
+    width: 85%;
+    font-size: 18px;
+}
+
+.qty-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.qty-btn {
+    width: 45px;
+    height: 45px;
+    border: none;
+    background: #2a3a6b;
+    color: white;
+    border-radius: 50%;
+    font-size: 26px;
+    transition: 0.2s;
+}
+
+.qty-btn:hover {
+    background: #1f2b50;
+}
+
+.qty-number {
+    width: 55px;
+    height: 45px;
+    text-align: center;
+    font-size: 22px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    background: white;
+}
+
+#summary-box {
+    margin-top: 60px;
+    padding: 35px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    font-size: 20px;
+}
+
+#summary-list {
+    margin-top: 15px;
+    line-height: 2.1;
+    font-size: 19px;
+}
+
+#total-price {
+    display: block;
+    margin-top: 20px;
+    font-size: 26px;
+    color: #2a3a6b;
+    font-weight: bold;
+}
+
+.next-btn {
+    display: block;
+    margin: 35px auto 0 auto;
+    width: 300px;
+    height: 65px;
+    background: #2a3a6b;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 24px;
+    text-align: center;
+    transition: 0.25s;
+}
+
+.next-btn:hover {
+    background: #1f2b50;
+    transform: translateY(-3px);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="food-container">
+
+    <h2 class="food-title">選擇餐飲</h2>
+
+    {% if booking %}
+    <div class="booking-info">
+        <div>影城：{{ booking.theater }}</div>
+        <div>電影：{{ booking.movie }}</div>
+        <div>日期：{{ booking.date }}</div>
+        <div>時間：{{ booking.time }}</div>
+        <div>票種：全票 {{ booking.adult }} 張，學生票 {{ booking.student }} 張</div>
+    </div>
+    {% endif %}
+
+    <!-- 商品列表 -->
+    <div class="food-grid">
+
+        <!-- 可樂 -->
+        <div class="food-item" data-name="可樂" data-small="50" data-medium="60" data-large="70">
+            <img src="/static/img/food/drink_coke.jpg" class="food-img">
+            <h5>可樂</h5>
+
+            <select class="size-select">
+                <option value="small">小杯 $50</option>
+                <option value="medium">中杯 $60</option>
+                <option value="large">大杯 $70</option>
+            </select>
+
+            <div class="qty-control">
+                <button type="button" class="qty-btn minus">-</button>
+                <input type="text" class="qty-number" value="0" readonly>
+                <button type="button" class="qty-btn plus">+</button>
+            </div>
+        </div>
+
+        <!-- 美式咖啡 -->
+        <div class="food-item" data-name="美式咖啡" data-small="60" data-medium="70" data-large="80">
+            <img src="/static/img/food/drink_americano.jpg" class="food-img">
+            <h5>美式咖啡</h5>
+
+            <select class="size-select">
+                <option value="small">小杯 $60</option>
+                <option value="medium">中杯 $70</option>
+                <option value="large">大杯 $80</option>
+            </select>
+
+            <div class="qty-control">
+                <button type="button" class="qty-btn minus">-</button>
+                <input type="text" class="qty-number" value="0" readonly>
+                <button type="button" class="qty-btn plus">+</button>
+            </div>
+        </div>
+
+        <!-- 爆米花 -->
+        <div class="food-item" data-name="爆米花" data-small="70" data-medium="80" data-large="95">
+            <img src="/static/img/food/popcorn.jpg" class="food-img">
+            <h5>爆米花</h5>
+
+            <select class="size-select">
+                <option value="small">小份 $70</option>
+                <option value="medium">中份 $80</option>
+                <option value="large">大份 $95</option>
+            </select>
+
+            <div class="qty-control">
+                <button type="button" class="qty-btn minus">-</button>
+                <input type="text" class="qty-number" value="0" readonly>
+                <button type="button" class="qty-btn plus">+</button>
+            </div>
+        </div>
+
+        <!-- 熱狗 -->
+        <div class="food-item" data-name="熱狗" data-small="70" data-medium="90" data-large="110">
+            <img src="/static/img/food/hotdog.jpg" class="food-img">
+            <h5>熱狗</h5>
+
+            <select class="size-select">
+                <option value="small">小份 $70</option>
+                <option value="medium">中份 $90</option>
+                <option value="large">大份 $110</option>
+            </select>
+
+            <div class="qty-control">
+                <button type="button" class="qty-btn minus">-</button>
+                <input type="text" class="qty-number" value="0" readonly>
+                <button type="button" class="qty-btn plus">+</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 明細區塊 -->
+    <div id="summary-box">
+        <strong>餐飲明細：</strong><br>
+        <div id="summary-list">尚未選擇餐飲</div>
+
+        <strong id="total-price">總金額：$0</strong>
+    </div>
+
+    <!-- 送到 /booking/food（POST） -->
+    <form id="foodForm" action="{{ url_for('booking_food') }}" method="post">
+        <!-- 餐飲明細 JSON -->
+        <input type="hidden" name="foods_json" id="foods_json">
+        <!-- 餐飲總金額（可選用） -->
+        <input type="hidden" name="food_total" id="food_total" value="0">
+        <button class="next-btn" type="submit">下一步：選擇座位</button>
+    </form>
+
+</div>
+
+<script>
+// 更新明細 & 總價
+function updateSummary() {
+    let items = document.querySelectorAll('.food-item');
+    let summaryList = document.getElementById('summary-list');
+    let totalPrice = 0;
+    let html = "";
+
+    items.forEach(item => {
+        let qty = parseInt(item.querySelector('.qty-number').value);
+        if (qty > 0) {
+            let name  = item.dataset.name;
+            let size  = item.querySelector(".size-select").value;
+            let price = parseInt(item.dataset[size]);
+            totalPrice += price * qty;
+            html += `${name}（${size}） x${qty} …… $${price * qty}<br>`;
+        }
+    });
+
+    if (html === "") html = "尚未選擇餐飲";
+
+    summaryList.innerHTML = html;
+    document.getElementById("total-price").innerText = "總金額：$" + totalPrice;
+    document.getElementById("food_total").value = totalPrice;  // 給後端用（可選）
+}
+
+// 加減按鈕
+document.querySelectorAll('.plus').forEach(btn => {
+    btn.addEventListener('click', function () {
+        let input = this.parentNode.querySelector('.qty-number');
+        input.value = parseInt(input.value) + 1;
+        updateSummary();
+    });
+});
+
+document.querySelectorAll('.minus').forEach(btn => {
+    btn.addEventListener('click', function () {
+        let input = this.parentNode.querySelector('.qty-number');
+        input.value = Math.max(0, parseInt(input.value) - 1);
+        updateSummary();
+    });
+});
+
+document.querySelectorAll('.size-select').forEach(sel => {
+    sel.addEventListener('change', updateSummary);
+});
+
+// 送出前打包成 JSON
+document.getElementById("foodForm").addEventListener("submit", function () {
+    let foods = {};
+
+    document.querySelectorAll(".food-item").forEach(item => {
+        let qty = parseInt(item.querySelector(".qty-number").value);
+        if (qty > 0) {
+            let name  = item.dataset.name;
+            let size  = item.querySelector(".size-select").value;  // small / medium / large
+            let price = parseInt(item.dataset[size]);              // 單價
+
+            foods[name] = {
+                size: size,
+                qty: qty,
+                price: price
+            };
+        }
+    });
+
+    document.getElementById("foods_json").value = JSON.stringify(foods);
+});
+</script>
+{% endblock %}

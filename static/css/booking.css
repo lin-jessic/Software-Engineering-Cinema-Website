@@ -1,0 +1,134 @@
+.booking-section {
+  max-width: 900px;
+  margin: 30px auto;
+  background: #ffffff;
+  padding: 24px 28px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.booking-section h1 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #5478dc;          /* 標題藍色 */
+}
+
+.booking-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.booking-form select,
+.booking-form input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* 下一步按鈕 */
+.booking-next-btn {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 16px;
+  background: #5478dc;     /* 按鈕藍色 */
+  color: #fff;
+  border-radius: 4px;
+}
+
+/* 票種 / 餐飲 */
+.ticket-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.ticket-item {
+  flex: 1 0 180px;
+  background: #f3f4f6;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.ticket-item h3 {
+  margin-top: 0;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.counter button {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #5478dc;     /* ← 原本是 #ef9e12（橘黃），改成藍色 */
+  color: #fff;
+  cursor: pointer;
+}
+
+/* 座位圖 */
+.seat-screen {
+  text-align: center;
+  padding: 6px 0;
+  background: #e5e7eb;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.seat-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.seat-row {
+  display: flex;
+  gap: 4px;
+}
+
+.seat {
+  width: 24px;
+  height: 24px;
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+/* 付款 */
+.radio-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.radio-row input {
+  margin-right: 6px;
+}
+
+.notice-box {
+  margin-top: 12px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+/* 確認頁 */
+.confirm-box {
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+.booking-summary {
+  margin-top: 16px;
+}

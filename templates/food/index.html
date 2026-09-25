@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}餐飲與商品{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/food.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="food-page">
+
+  <!-- ✅ 輪播大廣告 -->
+  <div id="foodCarousel" class="carousel slide food-carousel" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      {% for b in banners %}
+        <button type="button"
+                data-bs-target="#foodCarousel"
+                data-bs-slide-to="{{ loop.index0 }}"
+                class="{% if loop.first %}active{% endif %}"
+                aria-current="{% if loop.first %}true{% endif %}"
+                aria-label="Slide {{ loop.index }}">
+        </button>
+      {% endfor %}
+    </div>
+
+    <div class="carousel-inner">
+      {% for b in banners %}
+      <div class="carousel-item {% if loop.first %}active{% endif %}">
+        <a href="{{ b.href }}">
+          <img src="{{ url_for('static', filename=b.img) }}" class="d-block w-100" alt="{{ b.alt }}">
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#foodCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">上一張</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#foodCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">下一張</span>
+    </button>
+  </div>
+
+  <!-- ✅ 區塊標題 -->
+  <h2 class="food-section-title">限量新品</h2>
+
+  <!-- ✅ 商品 2 欄排版 -->
+  <div class="food-grid">
+    {% for p in products %}
+      <div class="food-card">
+        <div class="food-img">
+          <img src="{{ url_for('static', filename=p.img) }}" alt="{{ p.title }}">
+        </div>
+        <div class="food-meta">
+          <div class="food-title">{{ p.title }}</div>
+          {% if p.period %}
+            <div class="food-period">期間限定：{{ p.period }}</div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block title %}會員資料{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+<style>
+  .profile-wrapper {
+    max-width: 560px;
+    margin: 40px auto 60px;
+  }
+
+  .profile-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px 40px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  }
+
+  .profile-card h1 {
+    font-size: 32px;
+    margin-bottom: 16px;
+    color: #2563eb;
+  }
+
+  .form-label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #4b5563;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+  }
+
+  .form-control[readonly] {
+    background: #f9fafb;
+    color: #6b7280;
+  }
+
+  .btn-primary {
+    width: 100%;
+    margin-top: 22px;
+    padding: 12px 0;
+    border-radius: 10px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: #1d4ed8;
+  }
+
+  .balance-text {
+    margin-top: 18px;
+    font-size: 14px;
+  }
+
+  .balance-text a {
+    margin-left: 6px;
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  /* ✅ 讓提示框長得像你 login 那個綠框（圖一） */
+  .success-msg{
+    background:#eaf7ea;
+    border:1px solid #bfe5bf;
+    color:#2e7d32;
+    padding:14px 18px;
+    border-radius:8px;
+    margin: 12px 0 18px;
+    font-size:18px;
+    font-weight:700;
+  }
+
+  .error-msg{
+    background:#fdecec;
+    border:1px solid #f5b5b5;
+    color:#b42318;
+    padding:14px 18px;
+    border-radius:8px;
+    margin: 12px 0 18px;
+    font-size:18px;
+    font-weight:700;
+  }
+
+  .info-msg{
+    background:#eef5ff;
+    border:1px solid #cfe0ff;
+    color:#1d4ed8;
+    padding:14px 18px;
+    border-radius:8px;
+    margin: 12px 0 18px;
+    font-size:18px;
+    font-weight:700;
+  }
+
+  .two-col{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 14px;
+  }
+  @media (max-width: 768px){
+    .two-col{ grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="profile-wrapper">
+  <div class="profile-card">
+    <h1>會員資料</h1>
+
+    {# ✅ flash 訊息放在卡片裡、標題下面 #}
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        {% for c, m in msgs %}
+          {% if c == "success" %}
+            <div class="success-msg">{{ m }}</div>
+          {% elif c == "error" %}
+            <div class="error-msg">{{ m }}</div>
+          {% else %}
+            <div class="info-msg">{{ m }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('member_profile') }}">
+      <!-- 姓名 -->
+      <div class="form-group">
+        <label class="form-label">姓名</label>
+        <input type="text" name="username" class="form-control"
+               value="{{ user.username or '' }}" required>
+      </div>
+
+      <!-- 身分證字號（建議只顯示，不給改） -->
+      <div class="form-group">
+        <label class="form-label">身分證字號</label>
+        <input type="text" name="id_number" class="form-control"
+              value="{{ user.id_number or '' }}" readonly>
+        <div class="profile-footer">身分證字號僅供驗證使用，無法修改。</div>
+      </div>
+
+      <hr style="margin:22px 0;">
+
+      <!-- Email（通常不能改） -->
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control"
+               value="{{ user.email or '' }}" readonly>
+      </div>
+
+      <!-- 手機 -->
+      <div class="form-group">
+        <label class="form-label">手機號碼</label>
+        <input type="text" name="phone" class="form-control"
+               value="{{ user.phone or '' }}" required>
+      </div>
+
+      <!-- 生日 -->
+      <div class="form-group">
+        <label class="form-label">生日</label>
+        <input type="date" name="birthday" class="form-control"
+               value="{{ user.birthday or '' }}" required>
+      </div>
+
+      <!-- 銀行帳號 -->
+      <div class="form-group">
+        <label class="form-label">付款銀行帳號</label>
+        <input type="text" name="bank_account" class="form-control"
+               value="{{ user.bank_account or '' }}"
+               required placeholder="請輸入 10～16 碼數字">
+      </div>
+
+      <!-- 修改密碼（不顯示舊密碼，只驗證後更新） -->
+      <h2 style="font-size:18px;margin:0 0 12px;color:#111827;">修改密碼</h2>
+
+      <div class="form-group">
+        <label class="form-label">目前密碼</label>
+        <input type="password" name="current_password" class="form-control"
+              placeholder="請輸入目前密碼">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">新密碼</label>
+        <input type="password" name="new_password" class="form-control"
+              placeholder="至少 8 碼，含大寫/小寫/數字/特殊字元">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">確認新密碼</label>
+        <input type="password" name="new_password_confirm" class="form-control"
+              placeholder="請再輸入一次新密碼">
+      </div>
+
+      <div class="profile-footer">
+        ※ 若不修改密碼，以上三格可留空。
+      </div>
+
+      <!-- 忘記密碼題目 / 答案 -->
+      <div class="two-col">
+        <label class="form-label">忘記密碼題目
+          <select name="security_question" class="form-control" required>
+            <option value="">請選擇題目</option>
+            {% for q in security_questions %}
+              <option value="{{ q }}"
+                {% if user.security_question == q %}selected{% endif %}>
+                {{ q }}
+              </option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label class="form-label">忘記密碼答案
+          <input type="text" class="form-control"
+                 name="security_answer"
+                 value="{{ user.security_answer or '' }}"
+                 placeholder="請輸入答案"
+                 required>
+        </label>
+      </div>
+
+      <!-- 儲值卡餘額 -->
+      <div class="balance-text">
+        儲值卡餘額：{{ user.balance or 0 }} 元 |
+        <a href="{{ url_for('member_card') }}">前往儲值</a>
+      </div>
+
+      <button type="submit" class="btn-primary">儲存修改</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

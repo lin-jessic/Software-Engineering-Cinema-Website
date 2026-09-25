@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}線上訂票 - 選擇座位{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+  /* 座位顏色 & 狀態 */
+  .seat { 
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+  }
+
+  .seat.selected {
+    background: #4a90e2;
+    color: white;
+  }
+  .seat.disabled {
+  background: #e74c3c;   /* 紅色 */
+  color: white;
+  cursor: not-allowed;
+  pointer-events: none; /* 不能點 */
+  opacity: 0.9;
+}
+
+
+  .seat-row {
+    display: flex;
+    justify-content: center;
+  }
+
+  .seat-screen {
+    text-align: center;
+    padding: 10px;
+    background: #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .selected-count {
+    font-weight: bold;
+    color: #007bff;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section">
+  <h1>線上訂票 - 選擇座位</h1>
+  <p>
+    點擊座位即可選取 / 取消選取；座位狀況為紅色是已被選購的座位，不得選取。<br>
+    本次購買座位上限：<strong>{{ booking.adult + booking.student }}</strong> 個
+  </p>
+
+  <!-- 螢幕 -->
+  <div class="seat-screen">螢幕</div>
+
+  <!-- 座位區 -->
+  <div id="seatGrid">
+    {% for row in range(1, 7) %}
+    <div class="seat-row">
+      {% for col in range(1, 11) %}
+      <div class="seat" data-seat="{{ row }}-{{ col }}">A</div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- 底部資訊 -->
+  <div class="booking-summary">
+    <p>
+      已選座位：<span id="seatCount">0</span> 個
+      （最多 {{ booking.adult + booking.student }} 個）
+    </p>
+    <a id="nextBtn" href="#" class="booking-next-btn" style="pointer-events:none; opacity:0.5;">
+      下一步：付款方式
+    </a>
+  </div>
+</section>
+
+<script>
+  // 從後端帶來的「可選座位上限」（= 票數）
+  const maxSeats = {{ booking.adult + booking.student }};
+
+  // 如果有人沒選票就跑來這頁，直接導回去
+  if (maxSeats === 0) {
+    alert("請先在上一頁選擇票種，再選擇座位。");
+    window.location.href = "{{ url_for('booking_ticket') }}";
+  }
+
+  let selectedSeats = new Set();
+
+  const seats = document.querySelectorAll(".seat");
+  const seatCountText = document.getElementById("seatCount");
+  const nextBtn = document.getElementById("nextBtn");
+
+  /* =========================
+     ⭐ 隨機產生「不能選的座位」
+     ========================= */
+  const disabledRate = 0.25; // 25% 不可選
+
+  seats.forEach(seat => {
+    if (Math.random() < disabledRate) {
+      seat.classList.add("disabled");
+    }
+  });
+
+  /* =========================
+     ⭐ 座位點擊邏輯
+     ========================= */
+  seats.forEach(seat => {
+    seat.addEventListener("click", () => {
+
+      // 🚫 不能選的座位直接忽略
+      if (seat.classList.contains("disabled")) return;
+
+      const seatId = seat.dataset.seat;
+      const isSelected = seat.classList.contains("selected");
+
+      // 超過票數上限
+      if (!isSelected && selectedSeats.size >= maxSeats) {
+        alert(`你最多只能選擇 ${maxSeats} 個座位，因為目前只買了 ${maxSeats} 張票。`);
+        return;
+      }
+
+      // 切換選取狀態
+      if (isSelected) {
+        seat.classList.remove("selected");
+        selectedSeats.delete(seatId);
+      } else {
+        seat.classList.add("selected");
+        selectedSeats.add(seatId);
+      }
+
+      seatCountText.textContent = selectedSeats.size;
+
+      // 控制下一步按鈕
+      if (selectedSeats.size > 0) {
+        nextBtn.style.pointerEvents = "auto";
+        nextBtn.style.opacity = "1";
+      } else {
+        nextBtn.style.pointerEvents = "none";
+        nextBtn.style.opacity = "0.5";
+      }
+
+      // 帶座位到下一頁
+      const params = new URLSearchParams(window.location.search);
+      params.set("seats", Array.from(selectedSeats).join(","));
+      nextBtn.href = `/booking/payment?${params.toString()}`;
+    });
+  });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}忘記密碼 - 威力影城{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+  <div class="auth-card">
+    <h1>忘記密碼</h1>
+    <p style="margin: 8px 0 18px; color:#666; font-size:14px;">
+      請先輸入電子郵件，系統將顯示您設定的忘記密碼題目。
+    </p>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        {% for c, m in msgs %}
+          <div class="flash-msg {{ c }}">{{ m }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {# STEP 1：輸入 Email #}
+    {% if step == "email" %}
+      <form method="POST" action="{{ url_for('forgot') }}">
+        <input type="hidden" name="step" value="email">
+
+        <label>電子郵件
+          <input type="email" name="email" placeholder="請輸入 Email" required>
+        </label>
+
+        <button type="submit" class="auth-btn">下一步</button>
+      </form>
+    {% endif %}
+
+    {# STEP 2：回答題目 + 新密碼 #}
+    {% if step == "question" %}
+      <form method="POST" action="{{ url_for('forgot') }}">
+        <input type="hidden" name="step" value="question">
+        <input type="hidden" name="email" value="{{ email }}">
+
+        <label>忘記密碼題目
+          <input type="text" value="{{ security_question }}" readonly>
+        </label>
+
+        <label>忘記密碼答案
+          <input type="text" name="security_answer" placeholder="請輸入答案" required>
+        </label>
+
+        <label>新密碼
+          <input type="password" name="new_password" placeholder="請輸入新密碼" required>
+        </label>
+
+        <label>再次輸入新密碼
+          <input type="password" name="confirm_password" placeholder="請再次輸入新密碼" required>
+        </label>
+
+        <button type="submit" class="auth-btn">重設密碼</button>
+      </form>
+    {% endif %}
+
+    <div class="auth-links">
+      <a href="{{ url_for('login') }}">回登入</a>
+      <span>｜</span>
+      <a href="{{ url_for('register') }}">加入會員</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}訂票紀錄{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/booking.css') }}">
+<style>
+  .order-list-wrapper {
+    max-width: 1100px;   /* 維持原本寬度就好，風格比較像老師的 */
+    margin: 0 auto;
+  }
+
+  .order-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+  }
+
+  .order-list-table thead {
+    background: #f3f4ff;
+  }
+
+  .order-list-table th,
+  .order-list-table td {
+    padding: 14px 18px;
+    font-size: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+  }
+
+  /* ⭐ 只微調 1、最後一欄的寬度，其他都保持原本感覺 */
+  .order-list-table th:first-child,
+  .order-list-table td:first-child {
+    width: 80px;          /* 比原本 70 再寬一點點 */
+    text-align: center;
+  }
+
+  .order-list-table th:last-child,
+  .order-list-table td:last-child {
+    width: 100px;         /* 操作欄拉寬一點，查看 / 退票不會擠 */
+    text-align: center;
+    white-space: nowrap;  /* 避免換行 */
+  }
+
+  .order-list-table tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+  }
+
+  .status-ok {
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .status-cancel {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .order-title {
+    font-weight: 600;
+  }
+
+  .order-sub {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  .btn-link {
+    font-size: 14px;
+    text-decoration: none;
+    margin: 0 4px;
+  }
+
+  .btn-link-view {
+    color: #2563eb;
+  }
+
+  .btn-link-cancel {
+    color: #dc2626;
+  }
+
+  .btn-link-cancel[disabled] {
+    opacity: .4;
+    pointer-events: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="booking-section order-list-wrapper">
+  <h1>訂票紀錄</h1>
+
+  <table class="order-list-table">
+    <thead>
+      <tr>
+        <th>訂單編號</th>
+        <th>電影名稱 / 影城</th>
+        <th>場次時間</th>
+        <th>票數</th>
+        <th>狀態</th>
+        <th>金額</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>{{ o.id }}</td>
+
+        <td>
+          <div class="order-title">{{ o.movie_title_display or o.movie_title }}</div>
+          <div class="order-sub">{{ o.theater }}</div>
+        </td>
+
+        <td>
+          {{ o.date }}<br>
+          <span class="order-sub">{{ o.time }}</span>
+        </td>
+
+        <td>{{ o.ticket_count }} 張</td>
+
+        <td>
+          {% if o.status == '已退票' %}
+            <span class="status-pill status-cancel">已退票</span>
+          {% else %}
+            <span class="status-pill status-ok">已訂票</span>
+          {% endif %}
+        </td>
+
+        <td>${{ o.total_price or 0 }}</td>
+
+        <td>
+          <a class="btn-link btn-link-view"
+             href="{{ url_for('order_detail', order_id=o.id) }}">
+            查看
+          </a>
+          {% if o.status != '已退票' %}
+          <a class="btn-link btn-link-cancel"
+             href="{{ url_for('order_cancel', order_id=o.id) }}"
+             onclick="return confirm('確認要退票嗎？');">
+            退票
+          </a>
+          {% else %}
+          <a class="btn-link btn-link-cancel" disabled>退票</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

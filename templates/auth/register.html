@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block title %}加入會員{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<style>
+  .signup-section {
+    max-width: 520px;
+    margin: 40px auto;
+  }
+  .signup-form {
+    background: #ffffff;
+    padding: 32px 36px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  }
+  .signup-form h1 {
+    font-size: 32px;
+    color: #2854c5;
+    margin-bottom: 24px;
+  }
+  .signup-form label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .signup-form input,
+  .signup-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+  }
+  .signup-form input:focus,
+  .signup-form select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+  }
+  .signup-submit-btn {
+    margin-top: 28px;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #2854c5;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .signup-submit-btn:hover {
+    background: #1f3fa0;
+  }
+  .signup-agree {
+    margin-top: 18px;
+    font-size: 14px;
+  }
+  .signup-agree input {
+    width: auto;
+    margin-right: 6px;
+  }
+  .flash-msg {
+    color: #dc2626;
+    margin-bottom: 8px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="signup-section">
+  <div class="signup-form">
+    <h1>加入會員</h1>
+
+    {# 後端 flash 訊息 #}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <p class="flash-msg">{{ messages[0] }}</p>
+      {% endif %}
+    {% endwith %}
+
+    <form id="signupForm"
+          method="post"
+          action="{{ url_for('register') }}"
+          onsubmit="return validateSignup();">
+
+      {# 若你有 CSRF，可以放這個 #}
+      {{ csrf_token() if csrf_token is defined }}
+
+      <!-- 姓名 -->
+      <label for="username">姓名</label>
+      <input type="text" id="username" name="username"
+             placeholder="請輸入姓名"
+             value="{{ (form.username if form else '') or '' }}">
+
+      <!-- 身分證字號 -->
+      <label for="id_number">身分證字號</label>
+      <input type="text" id="id_number" name="id_number"
+             placeholder="A123456789"
+             maxlength="10"
+             value="{{ (form.id_number if form else '') or '' }}">
+
+      <!-- Email -->
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email"
+             placeholder="請輸入 Email"
+             value="{{ (form.email if form else '') or '' }}">
+
+      <!-- 手機號碼 -->
+      <label for="phone">手機號碼</label>
+      <input type="tel" id="phone" name="phone"
+             placeholder="09xxxxxxxx"
+             maxlength="10"
+             value="{{ (form.phone if form else '') or '' }}">
+
+      <!-- 生日 -->
+      <label for="birthday">生日</label>
+      <input type="date" id="birthday" name="birthday"
+             value="{{ (form.birthday if form else '') or '' }}">
+
+      <!-- 付款銀行帳號 -->
+      <label for="bank_account">付款銀行帳號</label>
+      <input type="text" id="bank_account" name="bank_account"
+             placeholder="請輸入銀行帳號"
+             value="{{ (form.bank_account if form else '') or '' }}">
+
+      <!-- 密碼 -->
+      <label for="password">密碼</label>
+      <input type="password" id="password" name="password"
+             placeholder="請輸入密碼（至少 8 碼）">
+
+      <!-- 確認密碼 -->
+      <label for="password_confirm">確認密碼</label>
+      <input type="password" id="password_confirm" name="password_confirm"
+             placeholder="請再輸入一次密碼">
+
+      <!-- 忘記密碼題目 -->
+      <label for="security_question">忘記密碼題目</label>
+      <select id="security_question" name="security_question" required>
+        <option value="">請選擇題目</option>
+        {% for q in questions %}
+          <option value="{{ q }}">{{ q }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- 忘記密碼答案 -->
+      <label for="security_answer">忘記密碼答案</label>
+      <input
+        id="security_answer"
+        type="text"
+        name="security_answer"
+        placeholder="請輸入答案"
+        required
+      />
+
+      <!-- 同意條款 -->
+      <div class="signup-agree">
+        <label>
+          <input type="checkbox" id="agree" name="agree"
+                 {% if form and form.get('agree') %}checked{% endif %}>
+          我已閱讀並同意會員條款
+        </label>
+      </div>
+
+      <button type="submit" class="signup-submit-btn">
+        送出註冊
+      </button>
+    </form>
+  </div>
+</section>
+
+<script>
+function validateSignup() {
+  const f = document.getElementById('signupForm');
+
+  const username = f.username.value.trim();
+  const idNum    = f.id_number.value.trim();
+  const email    = f.email.value.trim();
+  const phone    = f.phone.value.trim();
+  const birthday = f.birthday.value;
+  const bank     = f.bank_account.value.trim();
+  const pwd      = f.password.value;
+  const pwd2     = f.password_confirm.value;
+  const q        = f.security_question.value;
+  const ans      = f.security_answer.value.trim();
+  const agree    = f.agree.checked;
+
+  if (!username || !idNum || !email || !phone || !birthday ||
+      !bank || !pwd || !pwd2 || !q || !ans) {
+    alert("請確認填寫完所有欄位 (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧");
+    return false;
+  }
+
+  const idPattern = /^[A-Z][12]\d{8}$/;
+  if (!idPattern.test(idNum)) {
+    alert("身分證字號格式不正確喔～");
+    f.id_number.focus();
+    return false;
+  }
+
+  const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  if (!emailPattern.test(email)) {
+    alert("Email 格式看起來怪怪的，請再確認。");
+    f.email.focus();
+    return false;
+  }
+
+  const phonePattern = /^09\d{8}$/;
+  if (!phonePattern.test(phone)) {
+    alert("手機號碼格式需為 09 開頭共 10 碼。");
+    f.phone.focus();
+    return false;
+  }
+
+  // 密碼格式（大寫、小寫、數字、特殊字元）
+  const pwdPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{8,}$/;
+  if (!pwdPattern.test(pwd)) {
+    alert("密碼需至少 8 碼，並包含：大寫、小寫、數字、特殊字元各至少 1 個");
+    f.password.focus();
+    return false;
+  }
+
+  // 確認密碼一致
+  if (pwd !== pwd2) {
+    alert("兩次密碼輸入不一致");
+    f.password_confirm.focus();
+    return false;
+  }
+
+  // 銀行帳號檢查（10~16碼全數字）
+  const bankPattern = /^\d{10,16}$/;
+  if (!bankPattern.test(bank)) {
+    alert("銀行帳號格式錯誤：需為 10～16 碼數字");
+    f.bank_account.focus();
+    return false;
+  }
+
+  if (!agree) {
+    alert("請先勾選「我已閱讀並同意會員條款」。");
+    return false;
+  }
+
+  return true;
+}
+</script>
+{% endblock %}

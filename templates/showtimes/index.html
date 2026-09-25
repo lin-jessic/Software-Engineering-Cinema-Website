@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}場次查詢{% endblock %}
+
+{% block extra_css %}
+<style>
+.showtime-page {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+.showtime-card {
+  width: 420px;
+  background: #2c63a5;
+  color: #fff;
+  padding: 30px 28px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.showtime-card h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.showtime-card h2 {
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 20px;
+}
+
+.showtime-card select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+}
+
+.showtime-card .notice {
+  font-size: 13px;
+  text-align: left;
+  line-height: 1.6;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="showtime-page">
+  <div class="showtime-card">
+
+    <h1>場次查詢</h1>
+    <h2>Show Times</h2>
+
+    <form method="get" action="{{ url_for('showtimes_result') }}">
+    <select name="theater" required>
+    <option value="">請選擇查詢影城</option>
+
+    <optgroup label="雙北">
+        <option>台北信義威力影城</option>
+        <option>台北京站威力影城</option>
+        <option>台北南港 LaLaport 威力影城</option>
+        <option>台北西門威力影城</option>
+    </optgroup>
+
+    <optgroup label="新北">
+        <option>新北板橋威力影城</option>
+        <option>新北林口 MITSUI OUTLET PARK 威力影城</option>
+        <option>中和環球威力影城</option>
+    </optgroup>
+
+    <optgroup label="桃竹苗">
+        <option>桃園統領威力影城</option>
+        <option>桃園桃知道威力影城</option>
+        <option>新竹大遠百威力影城</option>
+        <option>新竹巨城威力影城</option>
+    </optgroup>
+
+    <optgroup label="中部">
+        <option>台中大遠百威力影城</option>
+        <option>台中大魯閣新時代威力影城</option>
+    </optgroup>
+
+    <optgroup label="南部">
+        <option>台南大遠百威力影城</option>
+        <option>台南 FOCUS 威力影城</option>
+        <option>高雄大遠百威力影城</option>
+    </optgroup>
+
+    <optgroup label="東部">
+        <option>花蓮新天堂樂園 威力影城</option>
+    </optgroup>
+    </select>
+
+
+      <button type="submit">查詢</button>
+    </form>
+
+    <div class="notice">
+      <p>場次開放時間說明：</p>
+      <ol>
+        <li>週五上映之電影，新場次公布於每週三中午 12:00–18:00。</li>
+        <li>週三、週四上映之電影，新場次公布於每週二晚上 20:00–22:00。</li>
+        <li>特殊假期與活動另行公告。</li>
+      </ol>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

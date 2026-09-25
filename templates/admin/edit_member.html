@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}編輯會員 - 後台{% endblock %}
+
+{% block extra_css %}
+<style>
+  .edit-member-container {
+    width: 500px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+  }
+  .edit-member-container label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  .edit-member-container input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  .edit-member-container button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .save-btn {
+    background: #28a745;
+    color: white;
+  }
+  .cancel-btn {
+    background: #6c757d;
+    color: white;
+    margin-left: 10px;
+    text-decoration: none;
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-member-container">
+  <h2>編輯會員資料</h2>
+
+  <form action="{{ url_for('admin_update_member', member_id=member.id) }}" method="post">
+
+    <label>姓名：</label>
+    <input type="text" name="username" value="{{ member.username }}" required>
+
+    <label>身分證：</label>
+    <input type="text" name="id_number" value="{{ member.id_number }}" required>
+
+    <label>Email：</label>
+    <input type="email" name="email" value="{{ member.email }}" required>
+
+    <label>電話：</label>
+    <input type="text" name="phone" value="{{ member.phone }}" required pattern="\d{10}" title="請輸入 10 位數字手機號碼">
+
+    <label>生日：</label>
+    <input type="date" name="birthday" value="{{ member.birthday }}" required>
+
+    <label>銀行帳號：</label>
+    <input type="text" name="bank_account" value="{{ member.bank_account }}" required pattern="\d+" title="請輸入數字帳號">
+
+    <label>密碼（如不修改請留空）：</label>
+    <input type="password" name="password" placeholder="留空則不修改">
+
+    <button type="submit" class="save-btn">儲存修改</button>
+    <a href="{{ url_for('admin_members') }}" class="cancel-btn">取消</a>
+  </form>
+</div>
+{% endblock %}
